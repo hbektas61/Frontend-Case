@@ -1,17 +1,16 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 80 },
+  { field: 'id', headerName: 'ID', width: 150},
   { field: 'name', headerName: 'Name', width: 150 },
-  { field: 'age', headerName: 'Age', type: 'number' , width: 180},
-  { field: 'gender', headerName: 'Gender', width: 80 },
+  { field: 'age', headerName: 'Age', type: 'number' , width: 150},
+  { field: 'gender', headerName: 'Gender', width: 150 },
 ];
 
-export default function PatientList({patients}) {
+const PatientList = (props) => {
   const [filterModel, setFilterModel] = React.useState({
     items: [],
     quickFilterExcludeHiddenColumns: true,
@@ -20,12 +19,20 @@ export default function PatientList({patients}) {
 
   const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({});
 
+  const router = useRouter();
+  
+  const redirectToPatientDetails = (event) => {
+    const id = event.row.id;
+
+    router.push(`/${id}`);
+  }
+
   return (
-    <Box sx={{ width: 1 }}>
+    <Box sx={{ width: 1 }} marginBottom={2}>
       <Box sx={{ height: 400 }}>
         <DataGrid
           columns={columns}
-          rows={patients}
+          rows={props.patients}
           disableColumnFilter
           disableDensitySelector
           slots={{ toolbar: GridToolbar }}
@@ -36,8 +43,11 @@ export default function PatientList({patients}) {
           onColumnVisibilityModelChange={(newModel) =>
             setColumnVisibilityModel(newModel)
           }
+          onRowClick={redirectToPatientDetails}
         />
       </Box>
     </Box>
   );
 }
+
+export default PatientList;

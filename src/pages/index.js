@@ -1,64 +1,39 @@
 import { Fragment, useEffect, useState } from "react";
 import PatientList from "../components/PatientList/PatientList";
+import Ribbon from "../components/Dashboard/Ribbon/Ribbon";
 import Head from "next/head";
 
-const Dummy_Patients = [
-    {
-        id: '1',
-        name: 'John Brown',
-        age: 32,
-        gender: 'Men',
-      },
-      {
-        id: '2',
-        name: 'Joe Black',
-        age: 42,
-        gender: 'Men',
-      },
-      {
-        id: '3',
-        name: 'Jim Green',
-        age: 32,
-        gender: 'Men',
-      },
-      {
-        id: '4',
-        name: 'Jim Red',
-        age: 32,
-        gender: 'Woman',
-      },
-      {
-        id: '5',
-        name: 'Jim se',
-        age: 32,
-        gender: 'Woman',
-      },
-      {
-        id: '6',
-        name: 'Jim se',
-        age: 32,
-        gender: 'Woman',
-      },
-];
-
-
-function HomePage () {
-    const [loadPatients,setLoadedPatients] = useState(Dummy_Patients);
-
-    useEffect(() => {
-
-        setLoadedPatients(Dummy_Patients);
-    }, []);
-
+function HomePage (props) {
     return (
         <Fragment>
             <Head>
                 <title>Patient App</title>
                 <meta name="description" content="dummy"/>
             </Head>
-            <PatientList patients={loadPatients}/>
+            <Ribbon/>
+            <PatientList patients={props.patients}/>  
         </Fragment>
     )
 }
 
 export default HomePage;
+
+export async function getServerSideProps(context) {
+  try {
+    const response = await fetch('http://localhost:3002/api/get');
+    if (!response.ok) {
+      throw new Error('Failed to fetch patients');
+    }
+    const data = await response.json();
+
+    return {
+      props: {
+        patients: data
+      }
+    }
+  } catch (error) {
+    return {
+      notFound: true
+    };
+  }
+}
