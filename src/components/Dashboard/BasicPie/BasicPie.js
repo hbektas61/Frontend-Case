@@ -11,9 +11,6 @@ const data = [
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const BasicPie = () => {
-  const onPieEnter = () => {
-    // Burada gerektiği gibi kod ekleyebilirsiniz
-  };
 
   return (
     <PieChart width={800} height={400} onMouseEnter={onPieEnter}>

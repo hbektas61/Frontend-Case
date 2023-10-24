@@ -10,7 +10,7 @@ const columns = [
   { field: 'gender', headerName: 'Gender', width: 150 },
 ];
 
-const PatientList = (props) => {
+const PatientList = ({patients}) => {
   const [filterModel, setFilterModel] = React.useState({
     items: [],
     quickFilterExcludeHiddenColumns: true,
@@ -32,7 +32,7 @@ const PatientList = (props) => {
       <Box sx={{ height: 400 }}>
         <DataGrid
           columns={columns}
-          rows={props.patients}
+          rows={patients}
           disableColumnFilter
           disableDensitySelector
           slots={{ toolbar: GridToolbar }}

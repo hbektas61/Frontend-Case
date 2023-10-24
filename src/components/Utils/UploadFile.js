@@ -2,28 +2,15 @@ import { useCallback, useEffect, useState } from "react";
 import { storage } from "@/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import Image from "next/image";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Grid } from "@mui/material";
+import Paper from "@mui/material/Paper";
 import Button from '@mui/material/Button';
 
-export default function UploadFile({ message }) {
-    const [fileContent, setFileContent] = useState({});
-    const [callbackURL, setCallbackURL] = useState("");
+export default function UploadFile({ user: { id, documents = [] } }) {
     const [spin, setSpin] = useState(false);
-    const [downloadURL, setDownloadURL] = useState("");
-
-    useEffect(() => {
-        const getFileContent = async () => {
-            if (!callbackURL) {
-                return;
-            }
-
-            //get file code here
-            setSpin(false);
-        };
-
-        getFileContent();
-    }, [callbackURL, setFileContent]);
+    const [userDocuments, setUserDocuments] = useState(documents);
 
     const onChange = useCallback(e => {
         setSpin(true);
@@ -33,16 +20,37 @@ export default function UploadFile({ message }) {
 
         uploadBytesResumable(storageRef, file).then((snapshot) => {
             getDownloadURL(snapshot.ref).then((downloadURL) => {
-                setDownloadURL(downloadURL);
-                setCallbackURL(btoa(downloadURL));
+                setSpin(false);
+                setUserDocuments((docs) => [...docs, downloadURL]);
+
+                fetch("http://localhost:3010/api/set-user-image", {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ id, imageURL: downloadURL }),
+                  method: 'POST',
+                });
             });
         });
-    }, []);
+    }, [id]);
 
     return  (
-        <Grid container alignItems="center" spacing={2}>
-            {downloadURL === "" && (
-                <Grid item>
+        <Grid container alignItems="center" spacing={2}>            
+            <Grid item>
+                <Grid  container>
+                {userDocuments.map((document, key) => {
+                    const fileName = decodeURIComponent(document.replace(/.*\//, '').replace(/\?.*/, '')).replace('files/', '');
+
+                    return (
+                        <Paper key={key}  style={{ margin:'10px',padding: '16px' }}>
+                        <a  style={{textDecoration:'none'}}target="_blank" key={key} href={document}>
+                            <span style={{ fontSize: '10px', color: 'black'}}>{fileName}</span>
+                        </a>
+                    </Paper>
+                    )
+                })}
+                </Grid>
+                <div style={{ display: 'flex' }}>
                     <input
                         style={{ display: 'none' }}
                         type="file"
@@ -53,30 +61,17 @@ export default function UploadFile({ message }) {
                     />
                     <label htmlFor="file-upload">
                         <Button component="span" startIcon={<UploadFileIcon />}>
-                            Upload
+                            Upload New File
                         </Button>
                     </label>
-                </Grid>
-            )}
-    
+                </div>
+            </Grid>
+
             {spin && (
                 <Grid item>
                     <CircularProgress />
                 </Grid>
             )}
-    
-            {!spin && <Grid item>{message}</Grid>}
-    
-            {fileContent && Object.values(fileContent).length > 0 &&
-                <Grid item>
-                    {/* File Content Display */}
-                </Grid>
-            }
         </Grid>
     );
 }
-
-export const Spin = () => <CircularProgress/>
-export const UploadIcon = () => (
-    <UploadFileIcon/>
-);

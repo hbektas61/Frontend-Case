@@ -3,39 +3,39 @@ import Card from "../Card/Card";
 import classes from "./Ribbon.module.css";
 import BasicPie from "../BasicPie/BasicPie";
 
-const Ribbon = () => {
+const Ribbon = ({patients}) => {
   return (
     <Grid container gap={2} className={classes.dataRibbon} marginBottom={5}>
       <Grid item>
         <Card
-          title={"Total Sales"}
-          value={"462"}
+          title={"Total Patients (live)"}
+          value={patients.length}
           description={
-            "The totals of all DataSoft products in the current financial year"
+            "The total of patients"
           }
         />
       </Grid>
       <Grid item>
         <Card
-          title={"Total Value"}
-          value={"$25,732.53"}
-          description={"The total sales of the current financial year"}
+          title={"Average Patient Age (live)"}
+          value={patients.reduce((acc, { age }) => acc + Number(age) / patients.length, 0).toFixed(2)}
+          description={"Average age of total patients"}
         />
       </Grid>
       <Grid item>
         <Card
-          title={"Avg. Order Value"}
-          value={"$159.30"}
+          title={"Total Appointment"}
+          value={"100"}
           description={
-            "The average order value for all sales this current financial year"
+            "The total of appointments"
           }
         />
       </Grid>
       <Grid item>
         <Card
-          title={"Conversion rate"}
-          value={"0.61%"}
-          description={"How many pitches become sales"}
+          title={"Treatments"}
+          value={"402"}
+          description={"The total of treatments"}
         />
       </Grid>
     </Grid>

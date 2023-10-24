@@ -1,26 +1,36 @@
-import { Fragment, useEffect, useState } from "react";
-import PatientList from "../components/PatientList/PatientList";
-import Ribbon from "../components/Dashboard/Ribbon/Ribbon";
+import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
+import MainPage from "@/components/Dashboard/MainPage";
 import Head from "next/head";
 
-function HomePage (props) {
-    return (
-        <Fragment>
-            <Head>
-                <title>Patient App</title>
-                <meta name="description" content="dummy"/>
-            </Head>
-            <Ribbon/>
-            <PatientList patients={props.patients}/>  
-        </Fragment>
-    )
+function HomePage(props) {
+  return (
+    <div>
+      <Head>
+        <title>Patient App</title>
+        <meta name="description" content="dummy" />
+      </Head>
+      <MainPage patients={props.patients}/>
+    </div>
+  );
 }
 
 export default HomePage;
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(ctx) {
+  const { userId } = getAuth(ctx.req);
+
+  if (!userId) {
+    return {
+      redirect: {
+        destination: '/sign-in',
+        permanent: false,
+      },
+    }
+  }
+
+
   try {
-    const response = await fetch('http://localhost:3002/api/get');
+    const response = await fetch('http://localhost:3010/api/get');
     if (!response.ok) {
       throw new Error('Failed to fetch patients');
     }
@@ -28,9 +38,10 @@ export async function getServerSideProps(context) {
 
     return {
       props: {
-        patients: data
+        patients: data,
+        ...buildClerkProps(ctx.req)
       }
-    }
+    };
   } catch (error) {
     return {
       notFound: true

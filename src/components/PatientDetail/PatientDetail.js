@@ -5,7 +5,6 @@ import Paper from "@mui/material/Paper";
 
 
 const PatientDetail = ({ data }) => {
-
     return (
         <Box p={3}> 
             <Paper elevation={3} style={{ padding: '16px', marginBottom: '16px' }}>
@@ -30,11 +29,14 @@ const PatientDetail = ({ data }) => {
             </Paper>
 
             <Paper elevation={3} style={{ padding: '16px', marginBottom: '16px' }}>
+            <Typography variant="h5" gutterBottom>
+                    Disease
+                </Typography>
                 <Typography variant="body1">
                     {data[0].disease}
                 </Typography>
             </Paper>
-            <UploadFile />
+            <UploadFile user={data[0]} />
         </Box>
     )
 }
