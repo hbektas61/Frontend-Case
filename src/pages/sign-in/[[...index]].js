@@ -4,9 +4,10 @@ export default function Page() {
   return <SignIn appearance={{
     elements:{
       rootBox:{
-        position: "relative",
-        left: "50%",
-        transform: "translate(-50%)"
+        position: 'fixed;',
+        left: '50%;',
+        transform: 'translate(-50%,-50%);',
+        top: '50%;'
       }
     }
   }}/>;

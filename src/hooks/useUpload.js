@@ -1,20 +1,20 @@
 import { useState, useCallback } from "react";
 import { storage } from "@/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { BASE_URL } from  "../utils/config";
+import { BASE_URL } from '@/configs/base';
 
 function useUpload(initialDocuments = []) {
-    const [spin, setLoadingSpin] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [documents, setDocuments] = useState(initialDocuments);
 
     const uploadFile = useCallback((file, id) => {
-        setLoadingSpin(true);
+        setIsLoading(true);
 
         const storageRef = ref(storage, "files/" + file.name);
 
         uploadBytesResumable(storageRef, file).then((snapshot) => {
             getDownloadURL(snapshot.ref).then((downloadURL) => {
-                setLoadingSpin(false);
+                setIsLoading(false);
                 setDocuments((docs) => [...docs, downloadURL]);
 
                 fetch(`${BASE_URL}/set-user-image`, {
@@ -29,7 +29,7 @@ function useUpload(initialDocuments = []) {
     }, []);
 
     return {
-        spin,
+        isLoading,
         documents,
         uploadFile
     };

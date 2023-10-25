@@ -6,7 +6,7 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 
 export default function UploadFile({ user: { id, documents = [] } }) {
-  const { spin, documents: userDocuments, uploadFile } = useUpload(documents);
+  const { isLoading, documents: userDocuments, uploadFile } = useUpload(documents);
 
   const onChange = (e) => {
     const file = e.target.files[0];
@@ -55,7 +55,7 @@ export default function UploadFile({ user: { id, documents = [] } }) {
         </div>
       </Grid>
 
-      {spin && (
+      {isLoading && (
         <Grid item>
           <CircularProgress />
         </Grid>

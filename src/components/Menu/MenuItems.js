@@ -123,6 +123,7 @@ const PatientMenu = () => {
               zIndex: 1000,
               mt: 1,
               maxHeight: "200px",
+              maxWidth: "440px",
               overflowY: "auto",
             }}
           >

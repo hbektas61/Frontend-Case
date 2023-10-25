@@ -1,5 +1,3 @@
-import Layout from "@/components/Layout/Layout";
-import Header from "@/components/Header/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import "@/styles/globals.css";
 import { CssBaseline } from "@mui/material";
@@ -12,7 +10,6 @@ export default function App({ Component, pageProps }) {
     <ClerkProvider {...pageProps}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Header />
         <Component {...pageProps} />
       </ThemeProvider>
     </ClerkProvider>

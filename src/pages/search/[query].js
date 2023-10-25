@@ -1,4 +1,5 @@
 import PatientList from "@/components/PatientList/PatientList";
+import { BASE_URL } from '@/configs/base';
 
 function SearchResults({ patients }) {
   return (
@@ -10,7 +11,7 @@ export async function getServerSideProps(context) {
   const query = context.params.query;
 
   try {
-    const response = await fetch(`http://localhost:3002/api/get?name=${query}`);
+    const response = await fetch(`${BASE_URL}/get?name=${query}`);
     const data = await response.json();
 
     return {

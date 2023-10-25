@@ -1,17 +1,50 @@
 import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
-import MainPage from "@/components/Dashboard/Dashboard";
-import { BASE_URL } from  "../utils/config";
-import Head from "next/head";
+import { BASE_URL } from '@/configs/base';
+import Layout from "@/components/Layout/Layout";
+import {
+  Container,
+  Typography,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Grid,
+} from "@mui/material";
+import Ribbon from "@/components/Dashboard/Ribbon/Ribbon";
+import PatientList from "@/components/PatientList/PatientList";
+import { useUser } from "@clerk/nextjs";
+import BasicPie from "@/components/Dashboard/BasicPie/BasicPie";
+import BarCharts from "@/components/Dashboard/BarCharts/BarCharts";
 
 function HomePage(props) {
+  const { isLoaded, isSignedIn, user } = useUser();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  
+  console.log(props)
+
   return (
-    <div>
-      <Head>
-        <title>Patient App</title>
-        <meta name="description" content="dummy" />
-      </Head>
-      <MainPage patients={props.patients}/>
-    </div>
+       <Layout>
+            {isLoaded && (
+      <Container maxWidth="lg">
+        <Typography variant={isMobile ? "h5" : "h4"} gutterBottom>
+          {isSignedIn && `Good morning, Dr.${user.username}!`}
+        </Typography>
+        Hello there! Welcome to our medical app. How can we assist you today?
+        <Box display="flex" justifyContent="space-between" marginBottom="20px">
+          <Ribbon patients={props.patients} />
+        </Box>
+        <PatientList patients={props.patients} />
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
+          <Grid item xs={12} md={6}>
+            <BasicPie patients={props.patients} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <BarCharts patients={props.patients} />
+          </Grid>
+        </Grid>
+      </Container>
+    )}
+       </Layout>
   );
 }
 
