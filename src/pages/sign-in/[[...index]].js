@@ -1,7 +1,7 @@
-import { SignIn } from "@clerk/nextjs";
+import { SignIn as SignInComp} from "@clerk/nextjs";
  
-export default function Page() {
-  return <SignIn appearance={{
+export default function SignIn() {
+  return <SignInComp appearance={{
     elements:{
       rootBox:{
         position: 'fixed;',

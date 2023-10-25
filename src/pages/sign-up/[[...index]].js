@@ -1,7 +1,7 @@
-import { SignUp } from "@clerk/nextjs";
+import { SignUp as SignUpComp} from "@clerk/nextjs";
  
-export default function Page() {
-  return <SignUp appearance={{
+export default function SignUp() {
+  return <SignUpComp appearance={{
     elements:{
       rootBox:{
         position: 'fixed;',

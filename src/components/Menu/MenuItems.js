@@ -27,10 +27,15 @@ const PatientMenu = () => {
   const router = useRouter();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const wrapperRef = useRef(null);
+  const searchIconRef = useRef(null);  
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        event.target !== searchIconRef.current 
+      ) {
         setSearchValue("");
       }
     }
@@ -68,9 +73,10 @@ const PatientMenu = () => {
         }}
       >
         <SearchIcon
+          ref={searchIconRef}
+          onClick={() => handleSearch(searchValue)}
           sx={{
             position: "absolute",
-            pointerEvents: "none",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -78,6 +84,7 @@ const PatientMenu = () => {
             color: theme.palette.text.secondary,
             zIndex: 1,
             fontSize: "2em",
+            cursor: "pointer",
           }}
         />
         <InputBase
@@ -151,7 +158,7 @@ const PatientMenu = () => {
             px: 2.5,
           }}
         >
-          <HomeIcon style={{ color: theme.palette.common.white }} key={0} />
+          <HomeIcon style={{ color: theme.palette.common.white, position: 'relative', top: '-2px' }} key={0} />
           <ListItemText
             primary={isMobileView ? "" : "Home"}
             sx={{

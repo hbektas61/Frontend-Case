@@ -30,6 +30,7 @@ const PatientList = ({ patients }) => {
     <Box sx={{ width: 1 }} marginBottom={2}>
       <Box sx={{ height: 400 }}>
         <DataGrid
+           
           columns={columns}
           rows={patients}
           disableColumnFilter
