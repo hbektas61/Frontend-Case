@@ -1,5 +1,6 @@
 import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
-import MainPage from "@/components/Dashboard/MainPage";
+import MainPage from "@/components/Dashboard/Dashboard";
+import { BASE_URL } from  "../utils/config";
 import Head from "next/head";
 
 function HomePage(props) {
@@ -30,7 +31,7 @@ export async function getServerSideProps(ctx) {
 
 
   try {
-    const response = await fetch('http://localhost:3010/api/get');
+    const response = await fetch(`${BASE_URL}/get`);
     if (!response.ok) {
       throw new Error('Failed to fetch patients');
     }

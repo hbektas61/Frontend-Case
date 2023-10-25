@@ -1,34 +1,60 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { useSearch } from "@/hooks/useSearch";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
-import Person2Icon from "@mui/icons-material/Person2";
 import NextLink from "next/link";
 import classes from "./FixedSiderBarItems.module.css";
 import HomeIcon from "@mui/icons-material/Home";
 import {
-  List,
-  ListItem,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 
 const PatientMenu = () => {
-  const [searchValue, setSearchValue] = React.useState("");
+  const {
+    searchValue,
+    setSearchValue,
+    searchResults,
+    handleSearchInputChange,
+    fetchSearchResultsDebounced,
+  } = useSearch();
+
   const theme = useTheme();
   const router = useRouter();
-  const isMobileView = useMediaQuery(theme.breakpoints.down("sm")); // Adjust the breakpoint as needed
+  const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setSearchValue("");
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setSearchValue]);
 
   const handleSearch = async (query) => {
+    if (query.trim() === "") return;
+
     try {
       router.push(`/search/${query}`);
+      setSearchValue("");
     } catch (error) {
       console.error("Arama sırasında bir hata oluştu:", error);
     }
+  };
+
+  const handleResultClick = (id) => {
+    router.push(`/${id}`);
+    setSearchValue("");
   };
 
   return (
@@ -56,7 +82,10 @@ const PatientMenu = () => {
         />
         <InputBase
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+            fetchSearchResultsDebounced(e.target.value);
+          }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSearch(searchValue);
@@ -71,7 +100,7 @@ const PatientMenu = () => {
             borderRadius: theme.shape.borderRadius,
             boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
             [theme.breakpoints.up("sm")]: {
-              width: "40ch",
+              width: "50ch",
               "&:focus": {
                 width: "50ch",
               },
@@ -80,7 +109,36 @@ const PatientMenu = () => {
           placeholder="Search…"
           inputProps={{ "aria-label": "search" }}
         />
+        {searchValue.trim() !== "" && (
+          <Box
+            ref={wrapperRef}
+            sx={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              backgroundColor: "white",
+              borderRadius: "4px",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              zIndex: 1000,
+              mt: 1,
+              maxHeight: "200px",
+              overflowY: "auto",
+            }}
+          >
+            {searchResults.map((result, index) => (
+              <div
+                key={index}
+                style={{ padding: "8px", cursor: "pointer", color: "black" }}
+                onClick={() => handleResultClick(result.id)}
+              >
+                {result.name}
+              </div>
+            ))}
+          </Box>
+        )}
       </Box>
+
       <NextLink className={classes.link} href="/">
         <ListItemButton
           onClick={() => {}}
@@ -92,14 +150,14 @@ const PatientMenu = () => {
             px: 2.5,
           }}
         >
-          <HomeIcon key={0} />
+          <HomeIcon style={{ color: theme.palette.common.white }} key={0} />
           <ListItemText
             primary={isMobileView ? "" : "Home"}
             sx={{
-              color: theme.palette.text.primary,
+              color: theme.palette.common.white,
               opacity: 1,
             }}
-          />{" "}
+          />
         </ListItemButton>
       </NextLink>
     </>
