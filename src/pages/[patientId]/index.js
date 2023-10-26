@@ -49,7 +49,7 @@ function PatientDetails(props) {
 export async function getServerSideProps(context) {
   const patientId = context.params.patientId;
 
-  const response = await fetch(`${BASE_URL}/get?id=${patientId}`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/get?id=${patientId}`);
 
   if (!response.ok) {
     console.error("Data fetching error:", response.statusText);

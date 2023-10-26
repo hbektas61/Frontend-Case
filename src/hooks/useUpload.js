@@ -17,7 +17,7 @@ function useUpload(initialDocuments = []) {
                 setIsLoading(false);
                 setDocuments((docs) => [...docs, downloadURL]);
 
-                fetch(`${BASE_URL}/set-user-image`, {
+                fetch(`${process.env.NEXT_PUBLIC_URL}/api/set-user-image`, {
                   headers: {
                     "Content-Type": "application/json",
                   },

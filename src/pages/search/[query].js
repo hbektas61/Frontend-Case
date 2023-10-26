@@ -26,7 +26,7 @@ export async function getServerSideProps(context) {
   const query = context.params.query;
 
   try {
-    const response = await fetch(`${BASE_URL}/get?name=${query}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/get?name=${query}`);
     const data = await response.json();
 
     return {

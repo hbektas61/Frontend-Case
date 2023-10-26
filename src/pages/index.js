@@ -70,7 +70,7 @@ export async function getServerSideProps(ctx) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/get`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/get`);
     if (!response.ok) {
       throw new Error("Failed to fetch patients");
     }
